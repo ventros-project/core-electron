@@ -1,0 +1,43 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  overflow: none;
+  width: 100vw;
+  height: 100vh;
+}
+
+html {
+  padding: 0;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  background-color: gray;
+  color: white;
+  text-align: center;
+  animation: fade-in 1s ease-out;
+  transition: background-color 320ms;
+  user-select: none;
+}
+
+img {
+  width: 128px;
+  height: 128px;
+}

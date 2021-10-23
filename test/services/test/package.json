@@ -1,0 +1,12 @@
+{
+  "name": "test_service",
+  "version": "1.0.0",
+  "description": "Testing service for VentrOS",
+  "main": "main.js",
+  "author": "Athaariq Ardhiansyah <athaariqa@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test App Example</title>
+  </head>
+  <body>
+    <div>
+      <a href="ventros://launcher">&lt; Go Back</a>
+    </div>
+    <form id="input-field">
+      <input type="text" id="input-url" />
+    </form>
+    <iframe
+      id="output-field"
+      style="display: inline-flex; width: 640px; height: 480px"
+      sandbox="allow-same-origin allow-forms allow-modals allow-orientation-lock allow-scripts"
+      allowpaymentrequest
+    ></iframe>
+    <pre id="error-field" style="color: red"></pre>
+    <script>
+      document.getElementById("input-field").onsubmit = (event) => {
+        event.preventDefault();
+        const inputURL = document.getElementById("input-url").value;
+        const output = document.getElementById("output-field");
+        const errorField = document.getElementById("error-field");
+        errorField.innerText = "";
+        output.src = inputURL;
+      };
+      document.getElementById("output-field").onerror = (
+        event,
+        source,
+        lineno,
+        colno,
+        error
+      ) => {
+        const errorField = document.getElementById("error-field");
+        errorField.innerText = String(error);
+      };
+    </script>
+  </body>
+</html>

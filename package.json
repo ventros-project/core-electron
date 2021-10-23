@@ -1,0 +1,17 @@
+{
+  "name": "ventros-core-electron",
+  "version": "1.0.0",
+  "description": "Core framework of VentrOS",
+  "main": "main.js",
+  "repository": "about:blank",
+  "author": "Athaariq Ardhiansyah <athaariqa@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "electron": "^15.2.0",
+    "tcp-port-used": "^1.0.2"
+  }
+}

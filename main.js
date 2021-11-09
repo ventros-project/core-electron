@@ -25,13 +25,13 @@ app.whenReady().then(() => {
       nodeIntegration: true,
       contextIsolation: false,
       webviewTag: true,
+      preload: path.join(__dirname, "preload.js"),
     },
     frame: false,
     kiosk: true,
     title: "VentrOS Core System",
   });
   mainWindow.removeMenu();
-  //mainWindow.webContents.toggleDevTools();
 
   // Fix Same-Origin problem
   mainWindow.webContents.session.webRequest.onHeadersReceived(

@@ -8,10 +8,14 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-builder --dir --linux --arm64"
   },
   "dependencies": {
-    "electron": "^15.2.0",
     "tcp-port-used": "^1.0.2"
+  },
+  "devDependencies": {
+    "electron": "^15.2.0",
+    "electron-builder": "^22.13.1"
   }
 }

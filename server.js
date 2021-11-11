@@ -18,6 +18,9 @@ const { protocol, session } = require("electron");
 
 //////// Global variables //////////////////////////////////////////////////////
 /** @type {string} */
+let dirName = "";
+
+/** @type {string} */
 let homePath = "";
 
 /** @type {Map<string,number>} */
@@ -26,12 +29,14 @@ let serviceList;
 
 //////// Library Interface /////////////////////////////////////////////////////
 /**
- * @param {string} targetPath
+ * @param {string} _dirName
+ * @param {string} _homePath
  * @param {Map<string,number>} serviceMap
  * @returns {(request: ProtocolRequest, callback: ServerCallback) => void}
  */
-module.exports = (targetPath, serviceMap) => {
-  homePath = targetPath;
+module.exports = (_dirName, _homePath, serviceMap) => {
+  dirName = _dirName;
+  homePath = _homePath;
   serviceList = serviceMap;
 
   protocol.registerFileProtocol("ventros", executeURL);
@@ -72,7 +77,7 @@ function executeURL(request, callback) {
   } else if (hostname.endsWith(".app")) {
     runApp(hostname, urlSegments, callback);
   } else if (hostname.endsWith(".service")) {
-    const filePath = path.join(__dirname, "pages", "service_not_exist.json");
+    const filePath = path.join(dirName, "pages", "service_not_exist.json");
     callback({
       path: filePath,
       mimeType: "application/json",
@@ -169,7 +174,7 @@ function runApp(hostname, urlSegments, callback) {
  * @param {ServerCallback} callback
  */
 function showNotFound(urlSegments, callback) {
-  let filePath = path.join(__dirname, "pages", "not_found", ...urlSegments);
+  let filePath = path.join(dirName, "pages", "not_found", ...urlSegments);
 
   try {
     // It's directory? look for index.html
@@ -178,7 +183,7 @@ function showNotFound(urlSegments, callback) {
     }
   } catch (_) {
     // Not exist? let SPA handle "404 Not Found"
-    filePath = path.join(__dirname, "pages", "not_found", "index.html");
+    filePath = path.join(dirName, "pages", "not_found", "index.html");
     callback(filePath);
     return;
   }

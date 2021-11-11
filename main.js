@@ -9,7 +9,9 @@ const gatewayServer = require("./server");
 ////////////////////////////////////////////////////////////////////////////////
 
 //////// Global variables //////////////////////////////////////////////////////
-const homePath = app.commandLine.getSwitchValue("home");
+const dirName = app.commandLine.getSwitchValue("root") || __dirname;
+const homePath =
+  app.commandLine.getSwitchValue("home") || path.join(dirName, "home");
 
 /** @type {Map<string,number>} */
 let serviceList = new Map();
@@ -25,7 +27,7 @@ app.whenReady().then(() => {
       nodeIntegration: true,
       contextIsolation: false,
       webviewTag: true,
-      preload: path.join(__dirname, "preload.js"),
+      preload: path.join(dirName, "preload.js"),
     },
     frame: false,
     kiosk: true,
@@ -66,7 +68,7 @@ app.whenReady().then(() => {
 
 /** @param {BrowserWindow} mainWindow */
 async function showNotFound(mainWindow) {
-  const pagePath = path.join(__dirname, "pages", "welcome", "index.html");
+  const pagePath = path.join(dirName, "pages", "welcome", "index.html");
   return await mainWindow.loadFile(pagePath);
 }
 

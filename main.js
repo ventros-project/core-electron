@@ -51,7 +51,7 @@ app.whenReady().then(() => {
     }
   );
 
-  gatewayServer(homePath, serviceList);
+  gatewayServer(dirName, homePath, serviceList);
   startServices();
 
   if (homePath) {

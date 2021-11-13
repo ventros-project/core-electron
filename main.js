@@ -159,7 +159,7 @@ async function startLauncher(mainWindow) {
 
 ipcMain.on("system:stop", () => {
   if (app.commandLine.hasSwitch("system")) {
-    spawn("sudo", ["shutdown", "now"]);
+    spawn("shutdown", ["now"]);
   } else {
     process.exit(0);
   }

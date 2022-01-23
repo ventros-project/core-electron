@@ -84,8 +84,18 @@ function startServices() {
   }
 
   servicePaths.forEach(async (eachPath) => {
-    const entryPoint = path.join(basePath, eachPath, "main.js");
-    if (fs.existsSync(entryPoint)) {
+    let mainFile = "main.js";
+    let entryPoint = path.join(basePath, eachPath, mainFile);
+
+    // No NodeJS entrypoint? Try python
+    let isExist = fs.existsSync(entryPoint);
+    if (!isExist) {
+      mainFile = "main.py";
+      entryPoint = path.join(basePath, eachPath, mainFile);
+      isExist = fs.existsSync(entryPoint);
+    }
+
+    if (isExist) {
       let portNumber = 0;
       let attempt = 0;
 
@@ -96,11 +106,27 @@ function startServices() {
       }
 
       if (attempt < 10) {
+        // What's the intrepeter? NodeJS or Python?
+        let interpreter = "";
+        switch (mainFile) {
+          case "main.js":
+            interpreter = "node";
+            break;
+          case "main.py":
+            interpreter = "python";
+            break;
+          default:
+            return;
+        }
+
+        // Register the service
         const serviceName = path.basename(eachPath);
         serviceList.set(serviceName, portNumber);
+
+        // Start the service
         const serviceProcess = spawn(
-          "node",
-          ["main.js", portNumber.toString()],
+          interpreter,
+          [mainFile, portNumber.toString()],
           {
             cwd: path.resolve(path.join(basePath, eachPath)),
           }
@@ -188,13 +214,18 @@ ipcMain.on("system:list:service", () => {
   const serviceList = [];
 
   fs.readdirSync(serviceBasePath).forEach((eachService) => {
-    const serviceEntryPoint = path.join(
-      serviceBasePath,
-      eachService,
-      "main.js"
-    );
+    // NodeJS Service
+    let serviceEntryPoint = path.join(serviceBasePath, eachService, "main.js");
     if (fs.existsSync(serviceEntryPoint)) {
       serviceList.push(`ventros://${eachService}.service`);
+      return;
+    }
+
+    // Python Service
+    serviceEntryPoint = path.join(serviceBasePath, eachService, "main.py");
+    if (fs.existsSync(serviceEntryPoint)) {
+      serviceList.push(`ventros://${eachService}.service`);
+      return;
     }
   });
 

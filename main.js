@@ -51,6 +51,18 @@ app.whenReady().then(() => {
     }
   );
 
+  // Fix display hot-plug bug
+  function onResize() {
+    mainWindow.removeListener("resize", onResize);
+    setTimeout(() => {
+      mainWindow.setKiosk(false);
+      mainWindow.setFullScreen(true);
+      mainWindow.setKiosk(true);
+      mainWindow.addListener("resize", onResize);
+    }, 1000);
+  }
+  mainWindow.addListener("resize", onResize);
+
   gatewayServer(dirName, homePath, serviceList);
   startServices();
 
@@ -95,6 +107,22 @@ function startServices() {
       isExist = fs.existsSync(entryPoint);
     }
 
+    // No python? Try shell
+    isExist = fs.existsSync(entryPoint);
+    if (!isExist) {
+      mainFile = "main.sh";
+      entryPoint = path.join(basePath, eachPath, mainFile);
+      isExist = fs.existsSync(entryPoint);
+    }
+
+    // No python? Try bash shell
+    isExist = fs.existsSync(entryPoint);
+    if (!isExist) {
+      mainFile = "main.bash";
+      entryPoint = path.join(basePath, eachPath, mainFile);
+      isExist = fs.existsSync(entryPoint);
+    }
+
     if (isExist) {
       let portNumber = 0;
       let attempt = 0;
@@ -114,6 +142,12 @@ function startServices() {
             break;
           case "main.py":
             interpreter = "python";
+            break;
+          case "main.sh":
+            interpreter = "sh";
+            break;
+          case "main.bash":
+            interpreter = "bash";
             break;
           default:
             return;
@@ -223,6 +257,20 @@ ipcMain.on("system:list:service", () => {
 
     // Python Service
     serviceEntryPoint = path.join(serviceBasePath, eachService, "main.py");
+    if (fs.existsSync(serviceEntryPoint)) {
+      serviceList.push(`ventros://${eachService}.service`);
+      return;
+    }
+
+    // Shell Service
+    serviceEntryPoint = path.join(serviceBasePath, eachService, "main.sh");
+    if (fs.existsSync(serviceEntryPoint)) {
+      serviceList.push(`ventros://${eachService}.service`);
+      return;
+    }
+
+    // Bash Service
+    serviceEntryPoint = path.join(serviceBasePath, eachService, "main.bash");
     if (fs.existsSync(serviceEntryPoint)) {
       serviceList.push(`ventros://${eachService}.service`);
       return;
